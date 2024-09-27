@@ -91,7 +91,7 @@ public class Monsters : MonoBehaviour
 
         public override void Enter()
         {
-            monsters.animator.Play("Idle");
+            monsters.animator.Play("move");
         }
 
         public override void Update()
@@ -114,7 +114,7 @@ public class Monsters : MonoBehaviour
 
         public override void Enter()
         {
-            monsters.animator.Play("Idle");
+            monsters.animator.Play("move");
         }
 
         public override void Update()

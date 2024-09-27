@@ -3,7 +3,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public enum State { Idle, Walk, Run1, Run2, JumpUp, JumpDown, Down, Roll, Dead, Size }
+    public enum State 
+    { Idle, Walk, Run1, Run2, JumpUp, JumpDown, 
+      Down, SpinDash, Roll, Dead, Size 
+    }
     [SerializeField] private State curState = State.Idle;
     private BaseState[] states = new BaseState[(int)State.Size];
 
@@ -13,7 +16,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] SpriteRenderer render;
     [SerializeField] GameObject players;
     [SerializeField] LayerMask loop;
-    private bool isInLoop = false;
     //[SerializeField] GameManager gameManager;
 
     [Header("Move")]
@@ -25,10 +27,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int speedValee;      // 속도 값
 
     [Header("SpinDash")]
-    private bool spinDash = false; // 스핀 대시 상태
-    private float spinDashmaxSpeed = 15f; // 최대 속도
-    private float spinDashspeed = 0f; // 현재 증가 중인 속도
-    private float spinDashcurrentSpeed = 0f; // 스핀 대시 시 적용될 속도
+    [SerializeField] float spinDashmaxSpeed = 30f; // 최대 속도
+    [SerializeField] float spinDashspeed = 0f; // 현재 증가 중인 속도
+    [SerializeField] float spinDashcurrentSpeed = 0f; // 스핀 대시 시 적용될 속도
 
     [Header("Jump")]
     [SerializeField] float jumpPower;
@@ -58,6 +59,7 @@ public class PlayerController : MonoBehaviour
         states[(int)State.JumpUp] = new JumpUpState(this);
         states[(int)State.JumpDown] = new JumpDownState(this);
         states[(int)State.Down] = new DownState(this);
+        states[(int)State.SpinDash] = new SpinDashState(this);
         states[(int)State.Roll] = new RollState(this);
         states[(int)State.Dead] = new DeadState(this);
     }
@@ -76,11 +78,6 @@ public class PlayerController : MonoBehaviour
     {
 
         x = Input.GetAxisRaw("Horizontal");
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Jump();
-        }
-        HandleSpinDashInput(); // 스핀 대시
         GroundCheck();
         speedValee = GetSpeedValue();
         states[(int)curState].Update();
@@ -263,6 +260,8 @@ public class PlayerController : MonoBehaviour
         public override void Enter()
         {
             player.animator.Play("Roll");
+            player.Jump();
+
         }
 
         public override void Update()
@@ -312,10 +311,47 @@ public class PlayerController : MonoBehaviour
             {
                 player.ChangeState(State.Idle);
             }
+            else if (Input.GetKey(KeyCode.DownArrow) && Input.GetKey(KeyCode.Space))
+            {
+                player.ChangeState(State.SpinDash);
+            }
         }
     }
 
+    private class SpinDashState : PlayerState
+    {
+        public SpinDashState(PlayerController player) : base(player)
+        {
+        }
 
+        public override void Enter()
+        {
+            player.animator.Play("SpinDash");
+            player.spinDashspeed = 0f;
+        }
+
+        public override void Update()
+        {
+            // 스핀 대시 입력 처리
+            if (Input.GetKey(KeyCode.DownArrow) && Input.GetKey(KeyCode.Space) && player.isGrounded)
+            {
+                // 최대 속도를 넘지 않도록 속도를 증가시킴
+                if (player.spinDashspeed < player.spinDashmaxSpeed)
+                {
+                    player.spinDashspeed += 1f * Time.deltaTime; // 1씩 증가
+                    Debug.Log(player.spinDashspeed);
+                }
+            }
+
+            // 스페이스바에서 손을 뗐을 때
+            if (Input.GetKeyUp(KeyCode.Space) && player.isGrounded)
+            {
+                Debug.Log("스페이스 손떔!");
+                player.spinDashcurrentSpeed = player.spinDashspeed; // 현재 속도를 저장
+                player.PerformSpinDash(); // 스핀 대시 실행
+            }
+        }
+    }
 
     private class RollState : PlayerState
     {
@@ -451,40 +487,12 @@ public class PlayerController : MonoBehaviour
             return 3; // 속도가 7.9 이상일 때
         }
     }
-
-    private void HandleSpinDashInput()
-    {
-        // 쉬프트 키가 눌려 있고, 캐릭터가 땅에 있을 때
-        if (Input.GetKeyDown(KeyCode.LeftShift) && isGrounded)
-        {
-            Debug.Log("스핀대시 시작");
-            // 최대 속도를 넘지 않도록 속도를 증가시킴
-            if (spinDashspeed < spinDashmaxSpeed)
-            {
-                spinDashspeed += 1f * Time.deltaTime; // 1씩 증가, 시간에 따라 부드럽게 증가
-                Debug.Log(spinDashspeed);
-            }
-        }
-
-        // 쉬프트 키에서 손을 뗐을 때
-        if (Input.GetKeyUp(KeyCode.LeftShift) && isGrounded)
-        {
-            spinDashcurrentSpeed = spinDashspeed; // 현재 속도를 currentSpeed에 저장
-            spinDash = true; // 스핀 대시 시작
-        }
-
-        // 스핀 대시 상태일 때
-        if (spinDash)
-        {
-            PerformSpinDash(); // 스핀 대시 실행
-        }
-    }
-
     private void PerformSpinDash()
     {
+        Debug.Log("함수 정상 호출");
         // 현재 속도로 힘을 추가하여 캐릭터를 이동
         rigid.AddForce(Vector2.right * spinDashcurrentSpeed, ForceMode2D.Impulse);
-        spinDash = false; // 스핀 대시 상태를 리셋
+        Debug.Log($"{spinDashcurrentSpeed} 함수 속도");
         spinDashspeed = 0f; // 다음 스핀 대시를 위해 속도를 리셋
     }
     #endregion
