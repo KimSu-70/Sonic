@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - Animal
   layers:
   - Default
   - TransparentFX
@@ -12,8 +13,8 @@ TagManager:
   - Ground
   - Water
   - UI
-  - 
-  - 
+  - Loop
+  - Animal
   - 
   - 
   - 
@@ -45,9 +46,12 @@ TagManager:
   - name: Ground
     uniqueID: 1146595787
     locked: 0
-  - name: BackGround
-    uniqueID: 301498545
+  - name: Loop
+    uniqueID: 1538752335
     locked: 0
   - name: Player
     uniqueID: 2211783517
+    locked: 0
+  - name: BackGround
+    uniqueID: 301498545
     locked: 0
