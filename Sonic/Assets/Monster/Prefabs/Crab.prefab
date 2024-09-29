@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 269717911308865218}
   - component: {fileID: 269717911308865225}
   - component: {fileID: 269717911308865224}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Crab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,6 +176,6 @@ MonoBehaviour:
   render: {fileID: 269717911308865228}
   playerhit: {fileID: 0}
   traceRange: 3
-  attackRange: 0
+  attackRange: 1
   moveSpeed: 3
   startPos: {x: 0, y: 0}

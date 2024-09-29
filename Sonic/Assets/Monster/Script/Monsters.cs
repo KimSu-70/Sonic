@@ -34,9 +34,13 @@ public class Monsters : MonoBehaviour
         monster = this.gameObject;
         animator = GetComponent<Animator>();
         render = GetComponent<SpriteRenderer>();
-        playerhit = GetComponent<PlayerController>();
         startPos = transform.position;
         player = GameObject.FindGameObjectWithTag("Player");
+        animal = GameObject.FindGameObjectWithTag("Animal");
+        if (player != null)
+        {
+            playerhit = player.GetComponent<PlayerController>();
+        }
 
         states[(int)curState].Enter();
     }
@@ -48,10 +52,8 @@ public class Monsters : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("충돌 전");
         if (collision.gameObject.CompareTag("Player")) // 플레이어와 충돌했을 때
         {
-            Debug.Log("충돌 감지");
             if (collision.transform.position.y > transform.position.y)
             ChangeState(State.Dead);
         }
@@ -171,8 +173,21 @@ public class Monsters : MonoBehaviour
 
         public override void Enter()
         {
-           //monsters.animator.Play("Attatc");
-           //monsters.AttackPlayer();
+            // 플레이어의 현재 상태가 SpinDashState 또는 JumpDownState가 아닐 때만 공격
+            if (monsters.playerhit != null &&
+                monsters.playerhit.curState != PlayerController.State.SpinDash &&
+                monsters.playerhit.curState != PlayerController.State.JumpDown)
+            {
+                if (monsters.playerhit.godLock == 0)
+                {
+                    monsters.AttackPlayer();
+                }
+            }
+            else
+            {
+                // 공격할 수 없는 경우 Idle 상태로 변경
+                monsters.ChangeState(State.Idle);
+            }
         }
 
         public override void Update()
@@ -185,10 +200,10 @@ public class Monsters : MonoBehaviour
         }
     }
 
-    //private void AttackPlayer()
-    //{
-    //    playerhit.TakeDamage(1);
-    //}
+    private void AttackPlayer()
+    {
+        playerhit.TakeDamage();
+    }
 
 
 

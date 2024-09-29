@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - Animal
+  - Shield
   layers:
   - Default
   - TransparentFX
@@ -13,13 +14,13 @@ TagManager:
   - Ground
   - Water
   - UI
-  - Loop
+  - Monster
   - Animal
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - PlayerGod
+  - Coin
+  - PlayerDead
+  - DeadZone
   - 
   - 
   - 

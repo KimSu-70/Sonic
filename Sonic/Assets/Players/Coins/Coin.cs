@@ -8,8 +8,8 @@ public class Coin : MonoBehaviour
     {
         if(collision.CompareTag("Player"))
         {
-            gameObject.SetActive(false);
             UIManager.Instance.SetCoin();
+            Destroy(gameObject, 0.01f);
         }
     }
 }

@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
 
     private int coin = 0;         // ƒ⁄¿Œ
+    private int coinCount = 0;
     private bool gameOver = false;
 
     private float times;            // √ 
@@ -54,13 +55,25 @@ public class UIManager : MonoBehaviour
     public void SetCoin()
     {
         coin++;
-        score += 100;
+        coinCount++;
         coinText.text = coin.ToString();
-        scoreText.text = score.ToString();
+
+        if (coinCount == 10)
+        {
+            score += 100;
+            coinCount = 0;
+            scoreText.text = score.ToString();
+        }
     }
 
     public int GetCoin()
     {
         return coin;
+    }
+
+    public void HitCoins()
+    {
+        coin = 0;
+        coinText.text = coin.ToString();
     }
 }
