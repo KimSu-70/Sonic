@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -15,28 +18,33 @@ public class PlayerController : MonoBehaviour
     [SerializeField] SpriteRenderer render;
     [SerializeField] GameObject players;
     [SerializeField] GameObject Coin;
-    [SerializeField] GameObject shield;
+    [SerializeField] public GameObject shield;
+
+    public event Action OnDied;
+
+
+    [SerializeField] public bool hitCheck = false;   // 상태 체크
 
     [Header("God")]
     [SerializeField] public int godLock;
 
     [Header("Move")]
-    [SerializeField] float maxSpeed;
+    [SerializeField] float maxSpeed = 15;
     [SerializeField] float currentSpeed = 0f;   // 현재 속도
-    [SerializeField] float acceleration; // 가속도
-    [SerializeField] float deceleration; // 감속값
-    [SerializeField] float frictionForce; // 마찰력
+    [SerializeField] float acceleration = 0.4f; // 가속도
+    [SerializeField] float deceleration = 0.7f; // 감속값
+    [SerializeField] float frictionForce = 0.35756f; // 마찰력
     [SerializeField] int speedValee;      // 속도 값
     [SerializeField] float controlLock;   // 제어 장금
 
     [Header("SpinDash")]
-    [SerializeField] float spinDashmaxSpeed = 30f; // 최대 속도
+    [SerializeField] float spinDashmaxSpeed = 25f; // 최대 속도
     [SerializeField] float spinDashspeed = 0f; // 현재 증가 중인 속도
     [SerializeField] float spinDashcurrentSpeed = 0f; // 스핀 대시 시 적용될 속도
 
     [Header("Jump")]
-    [SerializeField] float jumpPower;
-    [SerializeField] float maxFallSpeed;
+    [SerializeField] float jumpPower = 7;
+    [SerializeField] float maxFallSpeed = 10;
     [SerializeField] bool isGrounded;
     [SerializeField] LayerMask mask;
 
@@ -66,6 +74,12 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         states[(int)curState].Enter();
+        animator = GetComponent<Animator>();
+        rigid = GetComponent<Rigidbody2D>();
+        render = GetComponent<SpriteRenderer>();
+        players = this.gameObject;
+        PlayGameStart();
+        GetElectricityShield();
     }
 
     private void OnDestroy()
@@ -120,6 +134,7 @@ public class PlayerController : MonoBehaviour
 
         public override void Enter()
         {
+            player.hitCheck = false;
             player.animator.Play("Idle");
         }
 
@@ -253,16 +268,20 @@ public class PlayerController : MonoBehaviour
         public override void Enter()
         {
             player.animator.Play("Roll");
+            player.hitCheck = true;
         }
 
         public override void Update()
         {
-            if (player.rigid.velocity.y > 0)
+            if (player.rigid.velocity.y > -0.1)
             {
                 player.ChangeState(State.Idle);
             }
         }
-
+        public override void Exit()
+        {
+            player.hitCheck = false;
+        }
     }
 
     private class DownState : PlayerState
@@ -389,19 +408,19 @@ public class PlayerController : MonoBehaviour
         {
             player.animator.Play("Dead");
             player.PlayerDaed();
+            UIManager.Instance.PlayerLife();
             //player.StartCoroutine(IGameOver(1f));
-            //Destroy(player.players, 2f);
         }
 
-        //public override void Exit()
-        //{
-        //    player.StopCoroutine(IGameOver(0f));
-        //}
+        public override void Exit()
+        {
+            //player.StopCoroutine(IGameOver(0f));
+        }
 
         //private IEnumerator IGameOver(float waitTime)
         //{
         //    yield return new WaitForSeconds(waitTime);
-        //    player.gameManager.GameOver();
+        //    UIManager.Instance.GameOver();
         //}
     }
     public void Jump()
@@ -539,6 +558,7 @@ public class PlayerController : MonoBehaviour
     #region 스핀대시
     private void PerformSpinDash()
     {
+        hitCheck = true;
         // 현재 속도로 힘을 추가하여 캐릭터를 이동
         if (render.flipX == false)
         {
@@ -584,9 +604,47 @@ public class PlayerController : MonoBehaviour
     #endregion
     private void PlayerDaed()
     {
-        godLock = 1;
+        controlLock = 1;
         gameObject.layer = 11;
         rigid.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
+    }
+
+    public void Respawn()
+    {
+        // 플레이어의 위치를 초기 위치로 설정 (원하는 위치로 변경)
+        transform.position = new Vector2(-7.29f, -1.03f);
+        rigid.velocity = Vector2.zero; // 속도 초기화
+        gameObject.layer = 8;
+        controlLock = 0;
+        ChangeState(State.Idle); // 상태를 Idle로 초기화
+    }
+
+    private void GetElectricityShield()
+    {
+        Transform shields = transform.Find("ElectricityShield");
+        if (shields != null)
+        {
+            shield = shields.gameObject;
+        }
+    }
+
+    private void PlayGameStart()
+    {
+        UIManager.Instance.GameStart();
+        StartCoroutine(GameEnd());
+    }
+    IEnumerator GameEnd()
+    {
+        yield return new WaitForSeconds(3.1f);
+        UIManager.Instance.GameStartEnd();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("GOAL"))
+        {
+            OnDied?.Invoke();
+        }
     }
 }
 

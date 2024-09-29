@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PowerUp : MonoBehaviour
+public class PowerUP2 : MonoBehaviour
 {
     [SerializeField] Animator shields;
     [SerializeField] GameObject players;
@@ -17,12 +17,13 @@ public class PowerUp : MonoBehaviour
             player = players.GetComponent<PlayerController>();
         }
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.CompareTag("Player") && player.hitCheck)
+        if (collision.gameObject.CompareTag("Player") && player.hitCheck)
         {
             shields.Play("PowerOn");
-            collision.GetComponentInParent<PlayerController>().shield.SetActive(true);
+            collision.gameObject.GetComponentInParent<PlayerController>().shield.SetActive(true);
         }
     }
 }

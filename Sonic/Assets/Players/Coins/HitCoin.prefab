@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: -594528641130667462}
   m_Layer: 10
   m_Name: HitCoin
-  m_TagString: Untagged
+  m_TagString: HitCoin
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

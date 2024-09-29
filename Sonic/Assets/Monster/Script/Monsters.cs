@@ -36,7 +36,6 @@ public class Monsters : MonoBehaviour
         render = GetComponent<SpriteRenderer>();
         startPos = transform.position;
         player = GameObject.FindGameObjectWithTag("Player");
-        animal = GameObject.FindGameObjectWithTag("Animal");
         if (player != null)
         {
             playerhit = player.GetComponent<PlayerController>();
@@ -52,9 +51,9 @@ public class Monsters : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player")) // 플레이어와 충돌했을 때
+        if (collision.gameObject.CompareTag("Player") && playerhit.hitCheck) // 플레이어와 충돌했을 때
         {
-            if (collision.transform.position.y > transform.position.y)
+            //if (collision.transform.position.y > transform.position.y)
             ChangeState(State.Dead);
         }
     }
