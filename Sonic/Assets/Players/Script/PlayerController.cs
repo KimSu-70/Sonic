@@ -134,6 +134,7 @@ public class PlayerController : MonoBehaviour
 
         public override void Enter()
         {
+            player.controlLock = 0;
             player.hitCheck = false;
             player.animator.Play("Idle");
         }
@@ -382,17 +383,18 @@ public class PlayerController : MonoBehaviour
         public override void Enter()
         {
             player.PlayerHit();
+            player.controlLock = 1;
             if (player.render.flipX == false)
             {
                 player.animator.Play("Hit");
                 player.PlayerGodStart();
-                player.rigid.AddForce(new Vector2(-8f, 5), ForceMode2D.Impulse);
+                player.rigid.AddForce(new Vector2(-6f, 5), ForceMode2D.Impulse);
             }
             else
             {
                 player.animator.Play("Hit");
                 player.PlayerGodStart();
-                player.rigid.AddForce(new Vector2(+8f, 5), ForceMode2D.Impulse);
+                player.rigid.AddForce(new Vector2(+6f, 5), ForceMode2D.Impulse);
             }
         }
     }
@@ -585,8 +587,8 @@ public class PlayerController : MonoBehaviour
 
         render.color = new Color(1, 1, 1, 0.4f);
 
-        Invoke("PlayerGodEnd", 2);
-        Invoke("PlayerGodChangeState", 0.5f);
+        Invoke("PlayerGodEnd", 2.3f);
+        Invoke("PlayerGodChangeState", 0.8f);
     }
 
     private void PlayerGodEnd()
@@ -599,7 +601,25 @@ public class PlayerController : MonoBehaviour
 
     private void PlayerGodChangeState()
     {
+        controlLock = 0;
         ChangeState(State.Idle);
+    }
+
+    public void ShieldHit()
+    {
+        controlLock = 1;
+        if (render.flipX == false)
+        {
+            animator.Play("Hit");
+            PlayerGodStart();
+            rigid.AddForce(new Vector2(-6f, 5), ForceMode2D.Impulse);
+        }
+        else
+        {
+            animator.Play("Hit");
+            PlayerGodStart();
+            rigid.AddForce(new Vector2(+6f, 5), ForceMode2D.Impulse);
+        }
     }
     #endregion
     private void PlayerDaed()
@@ -643,8 +663,22 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.CompareTag("GOAL"))
         {
+            animator.Play("GOAL");
             OnDied?.Invoke();
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("JumpZone"))
+        {
+            JumpZone();
+        }
+    }
+
+    public void JumpZone()
+    {
+        rigid.AddForce(Vector2.up * 5.2f, ForceMode2D.Impulse);
     }
 }
 

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 269717911308865229}
   - component: {fileID: 269717911308865218}
   - component: {fileID: 269717911308865225}
-  - component: {fileID: 269717911308865224}
+  - component: {fileID: 7351000245094457038}
   m_Layer: 6
   m_Name: Crab
   m_TagString: Monster
@@ -74,8 +74,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1146595787
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: -1859522125, guid: 5ed73762b23f34548a216d3dc310a421, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -156,7 +156,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.9053098, y: 0.99232125}
   m_EdgeRadius: 0
---- !u!114 &269717911308865224
+--- !u!114 &7351000245094457038
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -165,15 +165,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 269717911308865219}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f06595bdfaf067488a5da1df59fe634, type: 3}
+  m_Script: {fileID: 11500000, guid: 301aec763b6e6bc4d8c4eb384f22f9b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   curState: 0
   player: {fileID: 0}
-  monster: {fileID: 269717911308865219}
+  monster: {fileID: 0}
   animal: {fileID: 8486641812902008115, guid: 8ee2e152fd157cc4eaffb01fc0f6699b, type: 3}
-  animator: {fileID: 269717911308865229}
-  render: {fileID: 269717911308865228}
+  animator: {fileID: 0}
+  render: {fileID: 0}
   playerhit: {fileID: 0}
   traceRange: 3
   attackRange: 1
