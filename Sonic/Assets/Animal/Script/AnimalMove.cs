@@ -13,7 +13,7 @@ public class AnimalMove : MonoBehaviour
         animal = this.gameObject;
         anim = GetComponent<Rigidbody2D>();
         flip = GetComponent<SpriteRenderer>();
-        moveSpeed = 6f;
+        moveSpeed = 15f;
 
         Destroy(animal, 4f);
         RandomMove();

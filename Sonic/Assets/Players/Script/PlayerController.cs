@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public int godLock;
 
     [Header("Move")]
-    [SerializeField] float maxSpeed = 15;
+    [SerializeField] float maxSpeed = 10;
     [SerializeField] float currentSpeed = 0f;   // 현재 속도
     [SerializeField] float acceleration = 0.4f; // 가속도
     [SerializeField] float deceleration = 0.7f; // 감속값
@@ -318,6 +318,7 @@ public class PlayerController : MonoBehaviour
         public override void Enter()
         {
             player.controlLock = 1;
+            AudioManager.Instance.PlaySfx(AudioManager.Sfx.SpinDash);
             player.animator.Play("SpinDash");
             player.spinDashspeed = 0f;
         }
@@ -330,7 +331,7 @@ public class PlayerController : MonoBehaviour
                 // 최대 속도를 넘지 않도록 속도를 증가시킴
                 if (player.spinDashspeed < player.spinDashmaxSpeed)
                 {
-                    player.spinDashspeed += 10f * Time.deltaTime; // 1씩 증가
+                    player.spinDashspeed += 20f * Time.deltaTime; // 1씩 증가
                 }
             }
 
@@ -383,18 +384,19 @@ public class PlayerController : MonoBehaviour
         public override void Enter()
         {
             player.PlayerHit();
+            AudioManager.Instance.PlaySfx(AudioManager.Sfx.Hit);
             player.controlLock = 1;
             if (player.render.flipX == false)
             {
                 player.animator.Play("Hit");
                 player.PlayerGodStart();
-                player.rigid.AddForce(new Vector2(-6f, 5), ForceMode2D.Impulse);
+                player.rigid.AddForce(new Vector2(-7f, 9), ForceMode2D.Impulse);
             }
             else
             {
                 player.animator.Play("Hit");
                 player.PlayerGodStart();
-                player.rigid.AddForce(new Vector2(+6f, 5), ForceMode2D.Impulse);
+                player.rigid.AddForce(new Vector2(+7f, 9), ForceMode2D.Impulse);
             }
         }
     }
@@ -462,7 +464,7 @@ public class PlayerController : MonoBehaviour
 
             float dd = Mathf.Deg2Rad * 360f / (coin + 1);
             Vector2 dir = new Vector2(Mathf.Cos(dd * i), Mathf.Sin(dd * i));
-            coins.AddForce(dir * 7f, ForceMode2D.Impulse);
+            coins.AddForce(dir * 9f, ForceMode2D.Impulse);
         }
     }
     #region 이동관련
@@ -612,13 +614,13 @@ public class PlayerController : MonoBehaviour
         {
             animator.Play("Hit");
             PlayerGodStart();
-            rigid.AddForce(new Vector2(-6f, 5), ForceMode2D.Impulse);
+            rigid.AddForce(new Vector2(-7f, 9), ForceMode2D.Impulse);
         }
         else
         {
             animator.Play("Hit");
             PlayerGodStart();
-            rigid.AddForce(new Vector2(+6f, 5), ForceMode2D.Impulse);
+            rigid.AddForce(new Vector2(+7f, 9), ForceMode2D.Impulse);
         }
     }
     #endregion
@@ -626,7 +628,7 @@ public class PlayerController : MonoBehaviour
     {
         controlLock = 1;
         gameObject.layer = 11;
-        rigid.AddForce(new Vector2(0, 7), ForceMode2D.Impulse);
+        rigid.AddForce(new Vector2(0, 9), ForceMode2D.Impulse);
     }
 
     public void Respawn()
@@ -678,7 +680,7 @@ public class PlayerController : MonoBehaviour
 
     public void JumpZone()
     {
-        rigid.AddForce(Vector2.up * 5.2f, ForceMode2D.Impulse);
+        rigid.AddForce(Vector2.up * 9.2f, ForceMode2D.Impulse);
     }
 }
 

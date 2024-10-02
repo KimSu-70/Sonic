@@ -1,3 +1,4 @@
+using Cinemachine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,6 +27,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] PlayerController player;
     [SerializeField] GameObject gameOvers;
     [SerializeField] GameObject gameStart;
+    [SerializeField] CinemachineVirtualCamera playerCamera;
 
     private void Start()
     {
@@ -33,6 +35,7 @@ public class UIManager : MonoBehaviour
         player.OnDied += GameOver;
         gameOvers.SetActive(false);
         gameStart.SetActive(false);
+        AudioManager.Instance.PlayBgm(true);
     }
 
     private void Awake()
@@ -104,6 +107,7 @@ public class UIManager : MonoBehaviour
         }
         else if (playerLife == 0) // 생명이 0이 되었을 때 게임 오버
         {
+            AudioManager.Instance.PlaySfx(AudioManager.Sfx.GameOver);
             GameOver(); // 게임 오버 UI 호출
         }
     }

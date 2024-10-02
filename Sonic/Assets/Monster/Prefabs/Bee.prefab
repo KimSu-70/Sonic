@@ -77,7 +77,7 @@ GameObject:
   - component: {fileID: 1207364829776003004}
   m_Layer: 6
   m_Name: Bee
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

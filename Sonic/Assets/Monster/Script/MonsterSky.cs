@@ -246,7 +246,7 @@ public class MonsterSky : MonoBehaviour
         public override void Enter()
         {
             monsters.animator.Play("Dead");
-
+            AudioManager.Instance.PlaySfx(AudioManager.Sfx.MonsterDead);
             Destroy(monsters.monster, 0.3f);
             Vector2 spawnPosition = monsters.transform.position; // 몬스터의 현재 위치
             GameObject animalInstance = Object.Instantiate(monsters.animal, spawnPosition, Quaternion.identity);

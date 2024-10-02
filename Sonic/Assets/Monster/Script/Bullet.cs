@@ -10,6 +10,11 @@ public class Bullet : MonoBehaviour
     [SerializeField] GameObject Player;
     [SerializeField] Rigidbody2D rigid;
 
+    private void Start()
+    {
+        Invoke("Retur", 5);
+    }
+
     public void InputBullet(Vector2 newDirection)
     {
         direction = newDirection.normalized; // 방향을 정규화
@@ -47,5 +52,10 @@ public class Bullet : MonoBehaviour
         {
             ObjectPoolManager.Instance.ReturnBullet(gameObject);
         }
+    }
+
+    private void Return()
+    {
+        ObjectPoolManager.Instance.ReturnBullet(gameObject);
     }
 }

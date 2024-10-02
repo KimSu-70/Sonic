@@ -22,6 +22,7 @@ public class SpringFootrestOn : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player") && player.hitCheck)
         {
+            AudioManager.Instance.PlaySfx(AudioManager.Sfx.SpringFootrest);
             animatorStart.SetBool("Check", true);
         }
     }
